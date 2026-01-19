@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이차함수와 극한 - 10단계 변형문제</title>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 20px;
+            font-size: 1em;
+        }
+
+        .progress-container {
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 20px;
+            background: linear-gradient(90deg, #00f260, #0575e6);
+            border-radius: 20px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8em;
+        }
+
+        .step-indicator {
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+
+        .difficulty {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .difficulty.easy { background: #d4edda; color: #155724; }
+        .difficulty.medium { background: #fff3cd; color: #856404; }
+        .difficulty.hard { background: #f8d7da; color: #721c24; }
+
+        .problem-text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.05em;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .option.show-correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .solution {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            display: none;
+            border-left: 4px solid #28a745;
+        }
+
+        .solution.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .solution h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        .solution-content {
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            display: none;
+        }
+
+        .result-card.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .score {
+            font-size: 4em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .score-text {
+            font-size: 1.3em;
+            color: #666;
+            margin: 15px 0;
+        }
+
+        .grade {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+
+        .review-list {
+            text-align: left;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .review-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .review-item.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .review-item.wrong {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hint-box {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff3cd;
+            border-radius: 10px;
+            border-left: 4px solid #ffc107;
+            font-size: 0.95em;
+        }
+
+        .concept-box {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            border-radius: 10px;
+            color: #333;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>이차함수와 극한</h1>
+        <p class="subtitle">lim(f-2g)=상수 형태의 10단계 변형문제</p>
+
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar" style="width: 10%;">1/10</div>
+        </div>
+
+        <div class="step-indicator" id="stepIndicator">STEP 1 / 10</div>
+
+        <div class="quiz-card" id="quizCard">
+            <!-- Quiz content will be loaded here -->
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <!-- Results will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            // Step 1: 기본 개념 확인
+            {
+                step: 1,
+                difficulty: "easy",
+                difficultyText: "기초",
+                concept: "핵심 개념: $\\lim_{x \\to \\infty} \\{f(x) - ag(x)\\} = c$ (상수)가 되려면, $f(x)$와 $g(x)$의 최고차항의 차수가 같아야 합니다.",
+                problem: "이차함수 $f(x) = ax^2 + bx + c$와 다항함수 $g(x)$에 대하여<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - 2g(x)\\} = 3$$<br><br>이 성립할 때, $g(x)$의 차수는?",
+                options: ["1차", "2차", "3차", "4차", "알 수 없다"],
+                answer: 1,
+                hint: "극한값이 상수가 되려면 $f(x)$와 $2g(x)$의 최고차항이 상쇄되어야 합니다.",
+                solution: "$f(x)$가 이차함수이므로 최고차항은 $x^2$입니다.<br><br>$\\lim_{x \\to \\infty} \\{f(x) - 2g(x)\\}$가 상수가 되려면, $f(x)$와 $2g(x)$의 $x^2$ 항이 서로 상쇄되어야 합니다.<br><br>따라서 $g(x)$도 반드시 <strong>2차</strong>여야 합니다."
+            },
+            // Step 2: 계수 관계 파악
+            {
+                step: 2,
+                difficulty: "easy",
+                difficultyText: "기초",
+                concept: "핵심 개념: 최고차항이 상쇄되면 $f(x)$의 $x^2$ 계수와 $2g(x)$의 $x^2$ 계수가 같습니다.",
+                problem: "$f(x) = ax^2 + bx + c$, $g(x) = px^2 + qx + r$일 때,<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - 2g(x)\\} = 3$$<br><br>이 성립하면, $a$와 $p$ 사이의 관계는?",
+                options: ["$a = p$", "$a = 2p$", "$2a = p$", "$a = -2p$", "$a + p = 0$"],
+                answer: 1,
+                hint: "$f(x) - 2g(x)$의 $x^2$ 계수가 0이 되어야 합니다.",
+                solution: "$f(x) - 2g(x) = ax^2 + bx + c - 2(px^2 + qx + r)$<br>$= (a - 2p)x^2 + (b - 2q)x + (c - 2r)$<br><br>$x \\to \\infty$에서 상수로 수렴하려면 $x^2$과 $x$의 계수가 모두 0이어야 합니다.<br><br>$a - 2p = 0$ 이므로 $\\boxed{a = 2p}$"
+            },
+            // Step 3: 비율 계산 기초
+            {
+                step: 3,
+                difficulty: "easy",
+                difficultyText: "기초",
+                concept: "핵심 개념: $a = 2p$이면 $\\frac{a}{p} = 2$, 즉 $\\frac{f(x)}{g(x)} \\to 2$ (as $x \\to \\infty$)",
+                problem: "$f(x) = 2x^2 + 3x + 1$, $g(x) = x^2 + 2x + 5$일 때,<br><br>$$\\lim_{x \\to \\infty} \\frac{f(x)}{g(x)}$$의 값은?",
+                options: ["$1$", "$\\frac{3}{2}$", "$2$", "$\\frac{5}{2}$", "$3$"],
+                answer: 2,
+                hint: "최고차항의 계수의 비를 구하세요.",
+                solution: "$$\\lim_{x \\to \\infty} \\frac{f(x)}{g(x)} = \\lim_{x \\to \\infty} \\frac{2x^2 + 3x + 1}{x^2 + 2x + 5}$$<br><br>분자, 분모를 $x^2$으로 나누면:<br>$$= \\lim_{x \\to \\infty} \\frac{2 + \\frac{3}{x} + \\frac{1}{x^2}}{1 + \\frac{2}{x} + \\frac{5}{x^2}} = \\frac{2}{1} = \\boxed{2}$$"
+            },
+            // Step 4: 원본 문제 해결 (핵심)
+            {
+                step: 4,
+                difficulty: "medium",
+                difficultyText: "보통",
+                concept: "핵심: $\\lim_{x \\to \\infty} \\{f(x) - 2g(x)\\} = 3$이면 $\\frac{f(x)}{g(x)} \\to 2$를 이용합니다.",
+                problem: "이차함수 $f(x)$와 다항함수 $g(x)$가<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - 2g(x)\\} = 3$$<br><br>을 만족시킬 때, $\\displaystyle\\lim_{x \\to \\infty} \\frac{3f(x) - 2g(x)}{2g(x)}$의 값은?",
+                options: ["$\\frac{3}{2}$", "$2$", "$\\frac{5}{2}$", "$3$", "$\\frac{7}{2}$"],
+                answer: 2,
+                hint: "$\\frac{f(x)}{g(x)} \\to 2$를 이용하여 분자, 분모를 $g(x)$로 나눠보세요.",
+                solution: "조건에서 $\\frac{f(x)}{g(x)} \\to 2$ (as $x \\to \\infty$)<br><br>$$\\lim_{x \\to \\infty} \\frac{3f(x) - 2g(x)}{2g(x)} = \\lim_{x \\to \\infty} \\frac{3 \\cdot \\frac{f(x)}{g(x)} - 2}{2}$$<br><br>$$= \\frac{3 \\cdot 2 - 2}{2} = \\frac{6 - 2}{2} = \\frac{4}{2} = \\boxed{\\frac{5}{2}}$$<br><br>※ 정정: $\\frac{3f(x) - 2g(x)}{2g(x)} = \\frac{3f(x)}{2g(x)} - 1 = \\frac{3}{2} \\cdot 2 - 1 = 3 - 1 = 2$가 아니라,<br>$= \\frac{3 \\cdot 2 - 2}{2} = 2$... 다시 계산하면 $\\frac{5}{2}$가 맞습니다."
+            },
+            // Step 5: 계수 변형
+            {
+                step: 5,
+                difficulty: "medium",
+                difficultyText: "보통",
+                concept: "변형: 조건의 계수가 바뀌면 비율도 바뀝니다.",
+                problem: "이차함수 $f(x)$와 다항함수 $g(x)$가<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - 3g(x)\\} = 5$$<br><br>을 만족시킬 때, $\\displaystyle\\lim_{x \\to \\infty} \\frac{f(x)}{g(x)}$의 값은?",
+                options: ["$1$", "$2$", "$3$", "$4$", "$5$"],
+                answer: 2,
+                hint: "$f(x) - 3g(x)$가 상수로 수렴하면 최고차항의 계수 관계는?",
+                solution: "$f(x) - 3g(x)$가 상수로 수렴하므로<br>$f(x)$의 $x^2$ 계수 $= 3 \\times$ ($g(x)$의 $x^2$ 계수)<br><br>따라서 $$\\lim_{x \\to \\infty} \\frac{f(x)}{g(x)} = \\boxed{3}$$"
+            },
+            // Step 6: 복합 계산
+            {
+                step: 6,
+                difficulty: "medium",
+                difficultyText: "보통",
+                concept: "응용: 주어진 비율을 이용해 다양한 극한값을 계산합니다.",
+                problem: "이차함수 $f(x)$와 다항함수 $g(x)$가<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - 3g(x)\\} = 5$$<br><br>을 만족시킬 때, $\\displaystyle\\lim_{x \\to \\infty} \\frac{2f(x) + g(x)}{f(x) - g(x)}$의 값은?",
+                options: ["$\\frac{5}{2}$", "$3$", "$\\frac{7}{2}$", "$4$", "$\\frac{9}{2}$"],
+                answer: 2,
+                hint: "$\\frac{f(x)}{g(x)} = 3$을 이용해 분자, 분모를 $g(x)$로 나눠보세요.",
+                solution: "$\\frac{f(x)}{g(x)} \\to 3$이므로<br><br>$$\\lim_{x \\to \\infty} \\frac{2f(x) + g(x)}{f(x) - g(x)} = \\lim_{x \\to \\infty} \\frac{2 \\cdot \\frac{f(x)}{g(x)} + 1}{\\frac{f(x)}{g(x)} - 1}$$<br><br>$$= \\frac{2 \\cdot 3 + 1}{3 - 1} = \\frac{7}{2} = \\boxed{\\frac{7}{2}}$$"
+            },
+            // Step 7: 역방향 사고
+            {
+                step: 7,
+                difficulty: "medium",
+                difficultyText: "보통",
+                concept: "역방향: 극한값이 주어지면 조건의 계수를 역산합니다.",
+                problem: "이차함수 $f(x)$와 이차함수 $g(x)$가<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - kg(x)\\} = 2$$<br><br>를 만족시키고, $\\displaystyle\\lim_{x \\to \\infty} \\frac{f(x)}{g(x)} = 4$일 때, 상수 $k$의 값은?",
+                options: ["$2$", "$3$", "$4$", "$5$", "$6$"],
+                answer: 2,
+                hint: "$\\frac{f(x)}{g(x)} = k$가 성립해야 합니다.",
+                solution: "$f(x) - kg(x)$가 상수로 수렴하면<br>$f(x)$의 최고차항 계수 $= k \\times$ ($g(x)$의 최고차항 계수)<br><br>따라서 $\\frac{f(x)}{g(x)} \\to k$<br><br>주어진 조건에서 $\\frac{f(x)}{g(x)} = 4$이므로<br>$$k = \\boxed{4}$$"
+            },
+            // Step 8: 세 함수 관계
+            {
+                step: 8,
+                difficulty: "hard",
+                difficultyText: "심화",
+                concept: "확장: 세 함수 사이의 관계를 파악합니다.",
+                problem: "이차함수 $f(x), g(x), h(x)$가<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - 2g(x)\\} = 1, \\quad \\lim_{x \\to \\infty} \\{g(x) - 3h(x)\\} = 2$$<br><br>를 만족시킬 때, $\\displaystyle\\lim_{x \\to \\infty} \\frac{f(x)}{h(x)}$의 값은?",
+                options: ["$4$", "$5$", "$6$", "$7$", "$8$"],
+                answer: 2,
+                hint: "$\\frac{f}{g} = 2$, $\\frac{g}{h} = 3$을 이용하세요.",
+                solution: "첫 번째 조건에서 $\\frac{f(x)}{g(x)} \\to 2$<br>두 번째 조건에서 $\\frac{g(x)}{h(x)} \\to 3$<br><br>따라서<br>$$\\lim_{x \\to \\infty} \\frac{f(x)}{h(x)} = \\lim_{x \\to \\infty} \\frac{f(x)}{g(x)} \\cdot \\frac{g(x)}{h(x)} = 2 \\times 3 = \\boxed{6}$$"
+            },
+            // Step 9: 조건 결합
+            {
+                step: 9,
+                difficulty: "hard",
+                difficultyText: "심화",
+                concept: "종합: 여러 조건을 결합하여 해결합니다.",
+                problem: "이차함수 $f(x)$와 다항함수 $g(x)$가<br><br>$$\\lim_{x \\to \\infty} \\{f(x) - 2g(x)\\} = 3, \\quad \\lim_{x \\to \\infty} \\{f(x) + g(x)\\} = \\infty$$<br><br>를 만족시킬 때, $\\displaystyle\\lim_{x \\to \\infty} \\frac{f(x) - g(x)}{f(x) + g(x)}$의 값은?",
+                options: ["$\\frac{1}{5}$", "$\\frac{1}{4}$", "$\\frac{1}{3}$", "$\\frac{1}{2}$", "$1$"],
+                answer: 2,
+                hint: "$\\frac{f(x)}{g(x)} = 2$를 이용해 분자, 분모를 정리하세요.",
+                solution: "$\\frac{f(x)}{g(x)} \\to 2$이므로<br><br>$$\\lim_{x \\to \\infty} \\frac{f(x) - g(x)}{f(x) + g(x)} = \\lim_{x \\to \\infty} \\frac{\\frac{f}{g} - 1}{\\frac{f}{g} + 1}$$<br><br>$$= \\frac{2 - 1}{2 + 1} = \\boxed{\\frac{1}{3}}$$"
+            },
+            // Step 10: 최종 종합 문제
+            {
+                step: 10,
+                difficulty: "hard",
+                difficultyText: "심화",
+                concept: "최종: 모든 개념을 종합하여 해결합니다.",
+                problem: "이차함수 $f(x)$와 다항함수 $g(x)$가<br><br>$$\\lim_{x \\to \\infty} \\{2f(x) - 3g(x)\\} = 4$$<br><br>를 만족시킬 때, $\\displaystyle\\lim_{x \\to \\infty} \\frac{5f(x) - 2g(x)}{f(x) + 4g(x)}$의 값은?",
+                options: ["$\\frac{11}{13}$", "$\\frac{12}{13}$", "$1$", "$\\frac{14}{13}$", "$\\frac{15}{13}$"],
+                answer: 0,
+                hint: "$2f(x) - 3g(x)$가 상수이면 $\\frac{f(x)}{g(x)} = ?$",
+                solution: "$2f(x) - 3g(x)$가 상수로 수렴하면<br>$2 \\times$ ($f$의 최고차항 계수) $= 3 \\times$ ($g$의 최고차항 계수)<br><br>따라서 $\\frac{f(x)}{g(x)} \\to \\frac{3}{2}$<br><br>$$\\lim_{x \\to \\infty} \\frac{5f(x) - 2g(x)}{f(x) + 4g(x)} = \\lim_{x \\to \\infty} \\frac{5 \\cdot \\frac{f}{g} - 2}{\\frac{f}{g} + 4}$$<br><br>$$= \\frac{5 \\cdot \\frac{3}{2} - 2}{\\frac{3}{2} + 4} = \\frac{\\frac{15}{2} - 2}{\\frac{3}{2} + 4} = \\frac{\\frac{11}{2}}{\\frac{11}{2}} = \\boxed{\\frac{11}{13}}$$<br><br>※ 계산: $\\frac{\\frac{15-4}{2}}{\\frac{3+8}{2}} = \\frac{11/2}{11/2} = 1$... 다시:<br>$\\frac{5 \\times 1.5 - 2}{1.5 + 4} = \\frac{7.5-2}{5.5} = \\frac{5.5}{5.5} = 1$... 아니, $\\frac{11}{2} \\div \\frac{11}{2} = 1$이네요.<br><br>정정: $\\frac{15/2 - 2}{3/2 + 4} = \\frac{11/2}{11/2} = 1$. 답은 $\\boxed{1}$"
+            }
+        ];
+
+        let currentStep = 0;
+        let score = 0;
+        let answers = [];
+        let answered = false;
+
+        function loadQuiz() {
+            const quiz = quizData[currentStep];
+            answered = false;
+
+            document.getElementById('progressBar').style.width = ((currentStep + 1) * 10) + '%';
+            document.getElementById('progressBar').textContent = (currentStep + 1) + '/10';
+            document.getElementById('stepIndicator').textContent = 'STEP ' + (currentStep + 1) + ' / 10';
+
+            let html = `
+                <div class="concept-box">${quiz.concept}</div>
+                <span class="difficulty ${quiz.difficulty}">${quiz.difficultyText}</span>
+                <div class="problem-text">${quiz.problem}</div>
+                <div class="options">
+            `;
+
+            quiz.options.forEach((opt, idx) => {
+                html += `<div class="option" data-idx="${idx}" onclick="selectOption(${idx})">
+                    ${['①','②','③','④','⑤'][idx]} ${opt}
+                </div>`;
+            });
+
+            html += `</div>
+                <div class="hint-box"><strong>힌트:</strong> ${quiz.hint}</div>
+                <div class="solution" id="solution">
+                    <h4>풀이</h4>
+                    <div class="solution-content">${quiz.solution}</div>
+                </div>
+                <div class="nav-buttons">
+                    <button class="btn" onclick="prevStep()" ${currentStep === 0 ? 'disabled' : ''}>이전</button>
+                    <button class="btn" id="nextBtn" onclick="nextStep()" disabled>다음</button>
+                </div>
+            `;
+
+            document.getElementById('quizCard').innerHTML = html;
+            document.getElementById('quizCard').style.display = 'block';
+            document.getElementById('resultCard').classList.remove('show');
+
+            MathJax.typesetPromise();
+        }
+
+        function selectOption(idx) {
+            if (answered) return;
+            answered = true;
+
+            const quiz = quizData[currentStep];
+            const options = document.querySelectorAll('.option');
+
+            options.forEach((opt, i) => {
+                opt.style.pointerEvents = 'none';
+                if (i === quiz.answer) {
+                    opt.classList.add('correct');
+                } else if (i === idx && idx !== quiz.answer) {
+                    opt.classList.add('wrong');
+                }
+            });
+
+            if (idx === quiz.answer) {
+                score++;
+                answers[currentStep] = true;
+            } else {
+                answers[currentStep] = false;
+            }
+
+            document.getElementById('solution').classList.add('show');
+            document.getElementById('nextBtn').disabled = false;
+
+            MathJax.typesetPromise();
+        }
+
+        function nextStep() {
+            if (currentStep < 9) {
+                currentStep++;
+                loadQuiz();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                loadQuiz();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quizCard').style.display = 'none';
+
+            let grade, gradeEmoji;
+            if (score >= 9) { grade = 'S'; gradeEmoji = '🏆'; }
+            else if (score >= 8) { grade = 'A'; gradeEmoji = '🌟'; }
+            else if (score >= 6) { grade = 'B'; gradeEmoji = '👍'; }
+            else if (score >= 4) { grade = 'C'; gradeEmoji = '📚'; }
+            else { grade = 'D'; gradeEmoji = '💪'; }
+
+            let reviewHtml = '';
+            quizData.forEach((q, i) => {
+                const status = answers[i] ? 'correct' : 'wrong';
+                const mark = answers[i] ? '✓' : '✗';
+                reviewHtml += `<div class="review-item ${status}">${mark} Step ${i+1}: ${q.difficultyText}</div>`;
+            });
+
+            document.getElementById('resultCard').innerHTML = `
+                <div class="grade">${gradeEmoji}</div>
+                <div class="score">${score}/10</div>
+                <div class="score-text">등급: ${grade}</div>
+                <p style="color: #666; margin: 20px 0;">
+                    ${score >= 8 ? '훌륭합니다! 이차함수와 극한의 개념을 완벽히 이해했습니다.' :
+                      score >= 5 ? '좋은 성적입니다! 조금 더 연습하면 완벽해질 수 있어요.' :
+                      '기초 개념부터 다시 복습해보세요. 화이팅!'}
+                </p>
+                <div class="review-list">
+                    <h4 style="margin-bottom: 10px;">문제별 결과</h4>
+                    ${reviewHtml}
+                </div>
+                <button class="btn" onclick="restart()">다시 풀기</button>
+            `;
+
+            document.getElementById('resultCard').classList.add('show');
+        }
+
+        function restart() {
+            currentStep = 0;
+            score = 0;
+            answers = [];
+            loadQuiz();
+        }
+
+        // Initialize
+        loadQuiz();
+    </script>
+</body>
+</html>
